@@ -4,45 +4,60 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AnaPanel extends JFrame {
+    private String kullaniciAdi; 
+    private String rol;
 
-    public AnaPanel(String kullaniciAdi) {
-        setTitle("Yönetim Paneli");
-        setSize(400, 250);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    public AnaPanel(String kullaniciAdi, String rol) {
+        try {
+            System.out.println("AnaPanel açılıyor: " + kullaniciAdi + " - " + rol);
+            this.kullaniciAdi = kullaniciAdi;
+            this.rol = rol;
+            setTitle("Proje Yönetim Paneli - Ana Sayfa");
+            setSize(500, 400);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
+            setResizable(false);
 
-        // Ana panel
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+            JPanel anaPanel = new JPanel();
+            anaPanel.setLayout(new BoxLayout(anaPanel, BoxLayout.Y_AXIS));
+            anaPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+            anaPanel.setBackground(new Color(245, 245, 245));
 
-        JLabel lblHosgeldin = new JLabel("Hoş geldin, " + kullaniciAdi);
-        lblHosgeldin.setFont(new Font("Arial", Font.BOLD, 16));
-        lblHosgeldin.setAlignmentX(Component.CENTER_ALIGNMENT);
+            JLabel hosgeldin = new JLabel("Hoş geldin, " + kullaniciAdi + " (" + rol + ")");
+            hosgeldin.setFont(new Font("Arial", Font.BOLD, 18));
+            hosgeldin.setAlignmentX(Component.CENTER_ALIGNMENT);
+            anaPanel.add(hosgeldin);
+            anaPanel.add(Box.createVerticalStrut(30));
 
-        JButton btnProjeler = new JButton("Projeleri Görüntüle");
-        JButton btnGorevler = new JButton("Görevleri Görüntüle");
-        JButton btnCikis = new JButton("Çıkış");
+            JButton projeGoruntule = new JButton("Projelerimi Görüntüle");
+            projeGoruntule.setAlignmentX(Component.CENTER_ALIGNMENT);
+            anaPanel.add(projeGoruntule);
+            anaPanel.add(Box.createVerticalStrut(10));
 
-        btnProjeler.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnGorevler.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnCikis.setAlignmentX(Component.CENTER_ALIGNMENT);
+            JButton gorevlerim = new JButton("Görevlerimi Görüntüle");
+            gorevlerim.setAlignmentX(Component.CENTER_ALIGNMENT);
+            anaPanel.add(gorevlerim);
+            anaPanel.add(Box.createVerticalStrut(10));
 
-        // Buton işlevi
-        btnCikis.addActionListener(e -> {
-            dispose();
-            new GirisEkrani(); // Giriş ekranına geri dön
-        });
+            // Eğer admin ise ekstra butonlar
+            if (rol != null && rol.equalsIgnoreCase("admin")) {//büyük küçük harf duyarsız yaptık çünkü ADMIN yazıyor veritabanında
+                System.out.println("Admin butonları ekleniyor!");
+                JButton projeEkle = new JButton("Proje Ekle");
+                projeEkle.setAlignmentX(Component.CENTER_ALIGNMENT);
+                anaPanel.add(projeEkle);
+                anaPanel.add(Box.createVerticalStrut(10));
 
-        panel.add(lblHosgeldin);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(btnProjeler);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(btnGorevler);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(btnCikis);
+                JButton kullaniciYonet = new JButton("Kullanıcıları Yönet");
+                kullaniciYonet.setAlignmentX(Component.CENTER_ALIGNMENT);
+                anaPanel.add(kullaniciYonet);
+                anaPanel.add(Box.createVerticalStrut(10));
+            }
 
-        add(panel);
-        setVisible(true);
+            add(anaPanel);
+            setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Bir hata oluştu: " + e.getMessage());
+        }
     }
 }

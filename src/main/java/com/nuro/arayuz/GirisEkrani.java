@@ -94,7 +94,7 @@ public class GirisEkrani extends JFrame //Java Swing kütüphanesinde bir pencer
 
         // Action Listeners
         btnGiris.addActionListener(e -> girisYap());
-        btnYeniKullanici.addActionListener(e -> yeniKullanici());
+        btnYeniKullanici.addActionListener(e -> new KayitEkrani());
 
         // Ekleme
         girisPanel.add(lblUsername);
@@ -140,7 +140,8 @@ public class GirisEkrani extends JFrame //Java Swing kütüphanesinde bir pencer
                     "Başarılı", 
                     JOptionPane.INFORMATION_MESSAGE);
                 dispose();
-                new AnaPanel(username);
+                String rol = user.getString("role");
+                new AnaPanel(username, rol);
             } else {
                 JOptionPane.showMessageDialog(this, 
                     "Şifre yanlış!", 
