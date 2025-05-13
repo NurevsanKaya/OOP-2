@@ -16,7 +16,7 @@ public class GirisEkrani extends JFrame //Java Swing kütüphanesinde bir pencer
 
     public GirisEkrani() {
         setTitle("Proje Yönetim Paneli - Giriş");
-        setSize(450, 400);
+        setSize(450, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -39,7 +39,7 @@ public class GirisEkrani extends JFrame //Java Swing kütüphanesinde bir pencer
         girisPanel.setBackground(Color.WHITE);
         girisPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(200, 200, 200)),
-            BorderFactory.createEmptyBorder(30, 30, 30, 30)
+            BorderFactory.createEmptyBorder(40, 40, 40, 40)
         ));
 
         // Kullanıcı adı

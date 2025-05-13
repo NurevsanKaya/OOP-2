@@ -9,7 +9,7 @@ public class AnaPanel extends JFrame {
 
     public AnaPanel(String kullaniciAdi, String rol) {
         try {
-            System.out.println("AnaPanel açılıyor: " + kullaniciAdi + " - " + rol);
+            System.out.println("AnaPanel açılıyor: " + kullaniciAdi );
             this.kullaniciAdi = kullaniciAdi;
             this.rol = rol;
             setTitle("Proje Yönetim Paneli - Ana Sayfa");
@@ -23,7 +23,7 @@ public class AnaPanel extends JFrame {
             anaPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
             anaPanel.setBackground(new Color(245, 245, 245));
 
-            JLabel hosgeldin = new JLabel("Hoş geldin, " + kullaniciAdi + " (" + rol + ")");
+            JLabel hosgeldin = new JLabel("Hoş geldin, " + kullaniciAdi );
             hosgeldin.setFont(new Font("Arial", Font.BOLD, 18));
             hosgeldin.setAlignmentX(Component.CENTER_ALIGNMENT);
             anaPanel.add(hosgeldin);
