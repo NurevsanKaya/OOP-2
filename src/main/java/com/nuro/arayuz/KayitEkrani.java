@@ -12,12 +12,13 @@ import java.awt.*;
 public class KayitEkrani extends JFrame {
     private JTextField kullaniciAdiAlani;
     private JPasswordField sifreAlani;
+    private JTextField emailAlani;
     private JComboBox<String> rolSecimi;
     private JButton kayitButonu;
 
     public KayitEkrani() {
         setTitle("Kayıt Ol");
-        setSize(350, 300);
+        setSize(350, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -40,6 +41,15 @@ public class KayitEkrani extends JFrame {
         kullaniciAdiAlani.setMaximumSize(new Dimension(200, 30));
         kullaniciAdiAlani.setAlignmentX(Component.CENTER_ALIGNMENT);
         anaPanel.add(kullaniciAdiAlani);
+        anaPanel.add(Box.createVerticalStrut(10));
+
+        JLabel emailEtiketi = new JLabel("E-posta:");
+        emailEtiketi.setAlignmentX(Component.CENTER_ALIGNMENT);
+        anaPanel.add(emailEtiketi);
+        emailAlani = new JTextField(20);
+        emailAlani.setMaximumSize(new Dimension(200, 30));
+        emailAlani.setAlignmentX(Component.CENTER_ALIGNMENT);
+        anaPanel.add(emailAlani);
         anaPanel.add(Box.createVerticalStrut(10));
 
         JLabel sifreEtiketi = new JLabel("Şifre:");
@@ -74,11 +84,17 @@ public class KayitEkrani extends JFrame {
 
     private void kayitOl() {
         String kullaniciAdi = kullaniciAdiAlani.getText().trim();
+        String email = emailAlani.getText().trim();
         String sifre = new String(sifreAlani.getPassword());
         String rol = (String) rolSecimi.getSelectedItem();
 
-        if (kullaniciAdi.isEmpty() || sifre.isEmpty()) {
+        if (kullaniciAdi.isEmpty() || sifre.isEmpty() || email.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Lütfen tüm alanları doldurun!", "Uyarı", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            JOptionPane.showMessageDialog(this, "Geçerli bir e-posta adresi giriniz!", "Uyarı", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -93,6 +109,7 @@ public class KayitEkrani extends JFrame {
 
         String sifreli = SifrelemeUtil.hashSifre(sifre);
         Document yeniKullanici = new Document("username", kullaniciAdi)
+                .append("email", email)
                 .append("password", sifreli)
                 .append("role", rol);
         kullanicilar.insertOne(yeniKullanici);

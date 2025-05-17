@@ -157,7 +157,7 @@ public class GirisEkrani extends JFrame //Java Swing kütüphanesinde bir pencer
     }
 
     private void yeniKullanici() {
-        // TODO: Yeni kullanıcı kayıt ekranını aç
+        
         JOptionPane.showMessageDialog(this, 
             "Yeni kullanıcı kaydı yakında eklenecek!", 
             "Bilgi", 

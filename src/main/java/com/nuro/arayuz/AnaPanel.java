@@ -3,69 +3,99 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Properties;
+import java.io.FileInputStream;
 
 public class AnaPanel extends JFrame {
     private String kullaniciAdi; 
     private String rol;
+    private Properties config;
+    private static final int MIN_WIDTH = 600;
+    private static final int MIN_HEIGHT = 500;
+    private static final int BUTTON_WIDTH = 250;
+    private static final int BUTTON_HEIGHT = 40;
 
     public AnaPanel(String kullaniciAdi, String rol) {
         try {
-            System.out.println("AnaPanel açılıyor: " + kullaniciAdi );
+            // Config dosyasını yükle
+            config = new Properties();
+            config.load(new FileInputStream("src/main/resources/config.properties"));
+            
+            System.out.println("AnaPanel açılıyor: " + kullaniciAdi);
             this.kullaniciAdi = kullaniciAdi;
             this.rol = rol;
             setTitle("Proje Yönetim Paneli - Ana Sayfa");
-            setSize(500, 400);
+            setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+            setPreferredSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
-            setResizable(false);
+            setResizable(true);
 
             JPanel anaPanel = new JPanel();
             anaPanel.setLayout(new BoxLayout(anaPanel, BoxLayout.Y_AXIS));
-            anaPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+            anaPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
             anaPanel.setBackground(new Color(245, 245, 245));
 
-            JLabel hosgeldin = new JLabel("Hoş geldin, " + kullaniciAdi );
-            hosgeldin.setFont(new Font("Arial", Font.BOLD, 18));
+            JLabel hosgeldin = new JLabel("Hoş geldin, " + kullaniciAdi);
+            hosgeldin.setFont(new Font("Arial", Font.BOLD, 24));
             hosgeldin.setAlignmentX(Component.CENTER_ALIGNMENT);
             anaPanel.add(hosgeldin);
-            anaPanel.add(Box.createVerticalStrut(30));
+            anaPanel.add(Box.createVerticalStrut(40));
 
-            JButton projeGoruntule = new JButton("Projelerimi Görüntüle");
-            projeGoruntule.setAlignmentX(Component.CENTER_ALIGNMENT);
+            JButton projeGoruntule = createStyledButton("Projelerimi Görüntüle");
             anaPanel.add(projeGoruntule);
-            anaPanel.add(Box.createVerticalStrut(10));
+            anaPanel.add(Box.createVerticalStrut(15));
 
-            JButton gorevlerim = new JButton("Görevlerimi Görüntüle");
-            gorevlerim.setAlignmentX(Component.CENTER_ALIGNMENT);
+            JButton gorevlerim = createStyledButton("Görevlerimi Görüntüle");
             anaPanel.add(gorevlerim);
-            anaPanel.add(Box.createVerticalStrut(10));
+            anaPanel.add(Box.createVerticalStrut(15));
 
             // Eğer admin ise ekstra butonlar
-            if (rol != null && rol.equalsIgnoreCase("admin")) {//büyük küçük harf duyarsız yaptık çünkü ADMIN yazıyor veritabanında
+            if (rol != null && rol.equalsIgnoreCase("admin")) {
                 System.out.println("Admin butonları ekleniyor!");
-                JButton projeEkle = new JButton("Proje Ekle");
-                projeEkle.setAlignmentX(Component.CENTER_ALIGNMENT);
+                JButton projeEkle = createStyledButton("Proje Ekle");
+                projeEkle.addActionListener(e -> {
+                    new ProjeEkleFormu(config).setVisible(true);
+                });
                 anaPanel.add(projeEkle);
-                anaPanel.add(Box.createVerticalStrut(10));
+                anaPanel.add(Box.createVerticalStrut(15));
 
-                JButton kullaniciYonet = new JButton("Kullanıcıları Yönet");
-                kullaniciYonet.setAlignmentX(Component.CENTER_ALIGNMENT);
+                JButton kullaniciYonet = createStyledButton("Kullanıcıları Yönet");
                 kullaniciYonet.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                KullaniciYonetimPaneli pencere = new KullaniciYonetimPaneli();
-                pencere.setVisible(true);
-                }
-            });
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        KullaniciYonetimPaneli pencere = new KullaniciYonetimPaneli();
+                        pencere.setVisible(true);
+                    }
+                });
                 anaPanel.add(kullaniciYonet);
-                anaPanel.add(Box.createVerticalStrut(10));
+                anaPanel.add(Box.createVerticalStrut(15));
             }
 
+            // Alt kısımda boşluk bırak
+            anaPanel.add(Box.createVerticalGlue());
+
             add(anaPanel);
+            pack(); // Pencereyi içeriğe göre boyutlandır
+            setLocationRelativeTo(null); // Ekranın ortasında göster
             setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Bir hata oluştu: " + e.getMessage());
         }
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setBackground(new Color(70, 130, 180));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(true);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
     }
 }
