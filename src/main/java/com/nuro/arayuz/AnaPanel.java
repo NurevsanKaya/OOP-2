@@ -43,10 +43,16 @@ public class AnaPanel extends JFrame {
             anaPanel.add(Box.createVerticalStrut(40));
 
             JButton projeGoruntule = createStyledButton("Projelerimi Görüntüle");
+            projeGoruntule.addActionListener(e -> {
+                new ProjeGoruntuleFormu(kullaniciAdi, config).setVisible(true);
+            });
             anaPanel.add(projeGoruntule);
             anaPanel.add(Box.createVerticalStrut(15));
 
             JButton gorevlerim = createStyledButton("Görevlerimi Görüntüle");
+            gorevlerim.addActionListener(e -> {
+                new GorevGoruntuleFormu(kullaniciAdi, config).setVisible(true);
+            });
             anaPanel.add(gorevlerim);
             anaPanel.add(Box.createVerticalStrut(15));
 
