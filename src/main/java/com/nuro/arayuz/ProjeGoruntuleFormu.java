@@ -25,7 +25,7 @@ public class ProjeGoruntuleFormu extends JFrame {
         setLayout(new BorderLayout());
 
         // Tablo modeli
-        String[] kolonlar = {"Proje Adı", "Açıklama", "Başlangıç Tarihi", "Bitiş Tarihi", "Görevim"};
+        String[] kolonlar = {"Proje Adı", "Açıklama", "Başlangıç Tarihi", "Bitiş Tarihi", "Görevim", "Oluşturan"};
         model = new DefaultTableModel(kolonlar, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -70,7 +70,6 @@ public class ProjeGoruntuleFormu extends JFrame {
                 MongoCollection<Document> collection = db.getCollection("projects");
 
                 for (Document doc : collection.find()) {
-                    // Kullanıcının görevli olduğu projeleri bul
                     for (Document responsible : doc.getList("responsibles", Document.class)) {
                         if (responsible.getString("username").equals(kullaniciAdi)) {
                             model.addRow(new Object[]{
@@ -78,7 +77,8 @@ public class ProjeGoruntuleFormu extends JFrame {
                                 doc.getString("description"),
                                 doc.getString("start_date"),
                                 doc.getString("end_date"),
-                                responsible.getString("task")
+                                responsible.getString("task"),
+                                doc.getString("created_by")
                             });
                             break;
                         }
@@ -90,7 +90,7 @@ public class ProjeGoruntuleFormu extends JFrame {
         } else {
             try (java.sql.Connection conn = java.sql.DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/proje_yonetim", "root", "")) {
-                String sql = "SELECT p.id, p.name, p.description, p.start_date, p.end_date, pu.task " +
+                String sql = "SELECT p.id, p.name, p.description, p.start_date, p.end_date, pu.task, p.created_by " +
                            "FROM projects p " +
                            "JOIN project_users pu ON p.id = pu.project_id " +
                            "WHERE pu.username = ?";
@@ -104,7 +104,8 @@ public class ProjeGoruntuleFormu extends JFrame {
                         rs.getString("description"),
                         rs.getString("start_date"),
                         rs.getString("end_date"),
-                        rs.getString("task")
+                        rs.getString("task"),
+                        rs.getString("created_by")
                     });
                 }
             } catch (java.sql.SQLException e) {

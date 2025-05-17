@@ -12,14 +12,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.ArrayList;
 
 public class ProjeEkleFormu extends JFrame {
     private Properties config;
+    private String kullaniciAdi;
     private static final int MIN_WIDTH = 600;
     private static final int MIN_HEIGHT = 700;
 
-    public ProjeEkleFormu(Properties config) {
+    public ProjeEkleFormu(Properties config, String kullaniciAdi) {
         this.config = config;
+        this.kullaniciAdi = kullaniciAdi;
 
         setTitle("Proje Ekle");
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
@@ -48,7 +51,7 @@ public class ProjeEkleFormu extends JFrame {
             try (MongoClient mongoClient = MongoClients.create("mongodb://127.0.0.1:27017")) {
                 MongoDatabase database = mongoClient.getDatabase("proje_yonetim");
                 MongoCollection<Document> collection = database.getCollection("users");
-                
+
                 for (Document doc : collection.find()) {
                     String username = doc.getString("username");
                     String email = doc.getString("email");
@@ -152,8 +155,8 @@ public class ProjeEkleFormu extends JFrame {
 
             if ("mongodb".equalsIgnoreCase(dbMode)) {
                 try (MongoClient mongoClient = MongoClients.create("mongodb://127.0.0.1:27017")) {
-                    MongoDatabase db = mongoClient.getDatabase("proje_yonetim");
-                    MongoCollection<Document> collection = db.getCollection("projects");
+                    MongoDatabase database = mongoClient.getDatabase("proje_yonetim");
+                    MongoCollection<Document> collection = database.getCollection("projects");
 
                     List<Document> responsibles = new ArrayList<>();
                     for (Map<String, String> map : responsibleList) {
@@ -164,7 +167,8 @@ public class ProjeEkleFormu extends JFrame {
                             .append("description", aciklama)
                             .append("start_date", baslangic)
                             .append("end_date", bitis)
-                            .append("responsibles", responsibles);
+                            .append("responsibles", responsibles)
+                            .append("created_by", kullaniciAdi);
 
                     collection.insertOne(doc);
                     JOptionPane.showMessageDialog(this, "Proje başarıyla eklendi.");
@@ -174,31 +178,39 @@ public class ProjeEkleFormu extends JFrame {
                 }
             } else {
                 try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/proje_yonetim", "root", "")) {
-                    String insertProject = "INSERT INTO projects (name, description, start_date, end_date) VALUES (?, ?, ?, ?)";
-                    PreparedStatement ps = conn.prepareStatement(insertProject, Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, ad);
-                    ps.setString(2, aciklama);
-                    ps.setString(3, baslangic);
-                    ps.setString(4, bitis);
-                    ps.executeUpdate();
+                    conn.setAutoCommit(false);
+                    try {
+                        String insertProject = "INSERT INTO projects (name, description, start_date, end_date, created_by) VALUES (?, ?, ?, ?, ?)";
+                        PreparedStatement ps = conn.prepareStatement(insertProject, Statement.RETURN_GENERATED_KEYS);
+                        ps.setString(1, ad);
+                        ps.setString(2, aciklama);
+                        ps.setString(3, baslangic);
+                        ps.setString(4, bitis);
+                        ps.setString(5, kullaniciAdi);
+                        ps.executeUpdate();
 
-                    ResultSet keys = ps.getGeneratedKeys();
-                    int projectId = -1;
-                    if (keys.next()) {
-                        projectId = keys.getInt(1);
+                        ResultSet keys = ps.getGeneratedKeys();
+                        int projectId = -1;
+                        if (keys.next()) {
+                            projectId = keys.getInt(1);
+                        }
+
+                        for (Map<String, String> map : responsibleList) {
+                            String insertUser = "INSERT INTO project_users (project_id, username, task) VALUES (?, ?, ?)";
+                            PreparedStatement ups = conn.prepareStatement(insertUser);
+                            ups.setInt(1, projectId);
+                            ups.setString(2, map.get("username"));
+                            ups.setString(3, map.get("task"));
+                            ups.executeUpdate();
+                        }
+
+                        conn.commit();
+                        JOptionPane.showMessageDialog(this, "Proje başarıyla eklendi.");
+                        dispose();
+                    } catch (Exception ex) {
+                        conn.rollback();
+                        throw ex;
                     }
-
-                    for (Map<String, String> map : responsibleList) {
-                        String insertUser = "INSERT INTO project_users (project_id, username, task) VALUES (?, ?, ?)";
-                        PreparedStatement ups = conn.prepareStatement(insertUser);
-                        ups.setInt(1, projectId);
-                        ups.setString(2, map.get("username"));
-                        ups.setString(3, map.get("task"));
-                        ups.executeUpdate();
-                    }
-
-                    JOptionPane.showMessageDialog(this, "Proje başarıyla eklendi.");
-                    dispose();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Hata: " + ex.getMessage());
                 }

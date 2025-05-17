@@ -61,7 +61,8 @@ public class AnaPanel extends JFrame {
                 System.out.println("Admin butonları ekleniyor!");
                 JButton projeEkle = createStyledButton("Proje Ekle");
                 projeEkle.addActionListener(e -> {
-                    new ProjeEkleFormu(config).setVisible(true);
+                    new ProjeEkleFormu(config, kullaniciAdi).setVisible(true);
+
                 });
                 anaPanel.add(projeEkle);
                 anaPanel.add(Box.createVerticalStrut(15));
