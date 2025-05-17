@@ -1,5 +1,6 @@
 package com.nuro.arayuz;
-
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.*;
 
@@ -49,6 +50,13 @@ public class AnaPanel extends JFrame {
 
                 JButton kullaniciYonet = new JButton("Kullanıcıları Yönet");
                 kullaniciYonet.setAlignmentX(Component.CENTER_ALIGNMENT);
+                kullaniciYonet.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                KullaniciYonetimPaneli pencere = new KullaniciYonetimPaneli();
+                pencere.setVisible(true);
+                }
+            });
                 anaPanel.add(kullaniciYonet);
                 anaPanel.add(Box.createVerticalStrut(10));
             }

@@ -54,7 +54,7 @@ public class KayitEkrani extends JFrame {
         JLabel rolEtiketi = new JLabel("Rol:");
         rolEtiketi.setAlignmentX(Component.CENTER_ALIGNMENT);
         anaPanel.add(rolEtiketi);
-        rolSecimi = new JComboBox<>(new String[]{"kullanıcı", "admin"});
+        rolSecimi = new JComboBox<>(new String[]{"kullanıcı", "ADMIN"});
         rolSecimi.setMaximumSize(new Dimension(200, 30));
         rolSecimi.setAlignmentX(Component.CENTER_ALIGNMENT);
         anaPanel.add(rolSecimi);
@@ -94,7 +94,7 @@ public class KayitEkrani extends JFrame {
         String sifreli = SifrelemeUtil.hashSifre(sifre);
         Document yeniKullanici = new Document("username", kullaniciAdi)
                 .append("password", sifreli)
-                .append("rol", rol);
+                .append("role", rol);
         kullanicilar.insertOne(yeniKullanici);
         JOptionPane.showMessageDialog(this, "Kayıt başarılı! Artık giriş yapabilirsiniz.", "Bilgi", JOptionPane.INFORMATION_MESSAGE);
         dispose();
