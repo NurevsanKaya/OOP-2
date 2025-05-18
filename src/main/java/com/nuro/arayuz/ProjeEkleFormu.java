@@ -8,11 +8,13 @@ import com.mongodb.client.*;
 import org.bson.Document;
 import com.toedter.calendar.JDateChooser;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.FileWriter;
 
 public class ProjeEkleFormu extends JFrame {
     private Properties config;
@@ -151,6 +153,16 @@ public class ProjeEkleFormu extends JFrame {
                     g.put("task", task);
                     responsibleList.add(g);
                 }
+            }
+            // JSON dosyasına yaz
+            try {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                FileWriter writer = new FileWriter("responsibles_export.json");
+                gson.toJson(responsibleList, writer);
+                writer.close();
+                System.out.println("JSON dosyası oluşturuldu.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
             if ("mongodb".equalsIgnoreCase(dbMode)) {

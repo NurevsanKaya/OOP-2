@@ -77,6 +77,13 @@ public class AnaPanel extends JFrame {
                 });
                 anaPanel.add(kullaniciYonet);
                 anaPanel.add(Box.createVerticalStrut(15));
+
+                JButton olusturduklarim = createStyledButton("Oluşturduğum Projeler");
+                olusturduklarim.addActionListener(e -> {
+                    new OlusturduklarimFormu(kullaniciAdi, config).setVisible(true);
+                });
+                anaPanel.add(olusturduklarim);
+                anaPanel.add(Box.createVerticalStrut(15));
             }
 
             // Alt kısımda boşluk bırak
