@@ -10,8 +10,6 @@ public class Main {
     public static void main(String[] args) {
        new GirisEkrani();
 
-
-
         String mod = ConfigReader.get("db.mode");
 
         if ("mongodb".equalsIgnoreCase(mod)) {
